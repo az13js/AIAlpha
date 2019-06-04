@@ -1,6 +1,6 @@
 # 股市预测模型
 
-这个模型是(VivekPa:AIAlpha)[https://github.com/VivekPa/AIAlpha]的，我拿过来修改成 Tensorflow 实现，并重新调试。
+这个模型是[VivekPa:AIAlpha](https://github.com/VivekPa/AIAlpha) 的，我拿过来修改成 Tensorflow 实现，并重新调试。
 
     python preprocessing.py
 
@@ -20,4 +20,4 @@
 
 按照上面几个脚本的顺序执行可以重现实验结果：
 
-!()[result.png]
+![](result.png)
