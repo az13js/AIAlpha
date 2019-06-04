@@ -1,7 +1,4 @@
 import tensorflow as tf
-from keras.layers import Input, Dense
-from keras.models import Model
-from keras import regularizers
 import pandas as pd
 import numpy as np
 
@@ -10,22 +7,91 @@ class AutoEncoder:
     def __init__(self, encoding_dim):
         self.encoding_dim = encoding_dim
 
+    def build(self, input_shape, shape1, shape2, shape3, shape4, shape5, shape6):
+        input = tf.keras.layers.Input(shape=(1, input_shape))
+        dense1 = tf.keras.layers.Dense(
+            units=shape1,
+            activation='relu',
+            use_bias=True,
+            kernel_initializer='glorot_uniform',
+            bias_initializer='zeros',
+            kernel_regularizer=None,
+            bias_regularizer=None,
+            activity_regularizer=tf.keras.regularizers.l2(l=0),
+            kernel_constraint=None,
+            bias_constraint=None
+        )(input)
+        dense2 = tf.keras.layers.Dense(
+            units=shape2,
+            activation='relu',
+            use_bias=True,
+            kernel_initializer='glorot_uniform',
+            bias_initializer='zeros',
+            kernel_regularizer=None,
+            bias_regularizer=None,
+            activity_regularizer=tf.keras.regularizers.l2(l=0),
+            kernel_constraint=None,
+            bias_constraint=None
+        )(dense1)
+        dense3 = tf.keras.layers.Dense(
+            units=shape3,
+            activation='relu',
+            use_bias=True,
+            kernel_initializer='glorot_uniform',
+            bias_initializer='zeros',
+            kernel_regularizer=None,
+            bias_regularizer=None,
+            activity_regularizer=tf.keras.regularizers.l2(l=0),
+            kernel_constraint=None,
+            bias_constraint=None
+        )(dense2)
+        dense4 = tf.keras.layers.Dense(
+            units=shape4,
+            activation='relu',
+            use_bias=True,
+            kernel_initializer='glorot_uniform',
+            bias_initializer='zeros',
+            kernel_regularizer=None,
+            bias_regularizer=None,
+            activity_regularizer=tf.keras.regularizers.l2(l=0),
+            kernel_constraint=None,
+            bias_constraint=None
+        )(dense3)
+        dense5 = tf.keras.layers.Dense(
+            units=shape5,
+            activation='relu',
+            use_bias=True,
+            kernel_initializer='glorot_uniform',
+            bias_initializer='zeros',
+            kernel_regularizer=None,
+            bias_regularizer=None,
+            activity_regularizer=tf.keras.regularizers.l2(l=0),
+            kernel_constraint=None,
+            bias_constraint=None
+        )(dense4)
+        dense6 = tf.keras.layers.Dense(
+            units=shape6,
+            activation='relu',
+            use_bias=True,
+            kernel_initializer='glorot_uniform',
+            bias_initializer='zeros',
+            kernel_regularizer=None,
+            bias_regularizer=None,
+            activity_regularizer=tf.keras.regularizers.l2(l=0),
+            kernel_constraint=None,
+            bias_constraint=None
+        )(dense5)
+
+        encode_decode = tf.keras.Model(inputs=input, outputs=dense6)
+        encode = tf.keras.Model(inputs=input, outputs=dense3)
+        return (encode_decode, encode)
+
     def build_train_model(self, input_shape, encoded1_shape, encoded2_shape, decoded1_shape, decoded2_shape):
-        input_data = Input(shape=(1, input_shape))
 
-        encoded1 = Dense(encoded1_shape, activation="relu", activity_regularizer=regularizers.l2(0))(input_data)
-        encoded2 = Dense(encoded2_shape, activation="relu", activity_regularizer=regularizers.l2(0))(encoded1)
-        encoded3 = Dense(self.encoding_dim, activation="relu", activity_regularizer=regularizers.l2(0))(encoded2)
-        decoded1 = Dense(decoded1_shape, activation="relu", activity_regularizer=regularizers.l2(0))(encoded3)
-        decoded2 = Dense(decoded2_shape, activation="relu", activity_regularizer=regularizers.l2(0))(decoded1)
-        decoded = Dense(input_shape, activation="sigmoid", activity_regularizer=regularizers.l2(0))(decoded2)
-
-        autoencoder = Model(inputs=input_data, outputs=decoded)
-
-        encoder = Model(input_data, encoded3)
+        (autoencoder, encoder) = self.build(input_shape, encoded1_shape, encoded2_shape, self.encoding_dim, decoded1_shape, decoded2_shape, input_shape)
 
         # Now train the model using data we already preprocessed
-        autoencoder.compile(loss="mean_squared_error", optimizer="adam")
+        autoencoder.compile(optimizer="adam", loss="mean_squared_error", metrics=["mse"])
 
         train = pd.read_csv("preprocessing/rbm_train.csv", index_col=0)
         ntrain = np.array(train)
