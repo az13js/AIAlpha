@@ -115,8 +115,6 @@ class NeuralNetwork:
 
         model.fit(train, train_y, epochs=2000)
 
-        model.save("models/model.h5", overwrite=True, include_optimizer=True)
-
         test_x = np.reshape(np.array(pd.read_csv("features/autoencoded_test_data.csv", index_col=0)),
                             (len(np.array(pd.read_csv("features/autoencoded_test_data.csv"))), 1, self.input_shape))
         test_y = np.array(pd.read_csv("features/autoencoded_test_y.csv", index_col=0))
@@ -142,9 +140,7 @@ class NeuralNetwork:
             plt.plot(stock_data)
             plt.plot(stock_data_test)
             stock = pd.DataFrame(stock_data, index=None)
-            stock.to_csv("sample_predictions/AAPL_predicted_prices.csv")
             stock_test = pd.DataFrame(stock_data_test, index=None)
-            stock_test.to_csv("sample_predictions/AAPL_actual_prices.csv")
             # print(stock_data)
             plt.show()
         else:
@@ -156,5 +152,5 @@ class NeuralNetwork:
 
 
 if __name__ == "__main__":
-    model = NeuralNetwork(20, True)
+    model = NeuralNetwork(20, False)
     model.make_train_model()
