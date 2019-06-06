@@ -113,7 +113,7 @@ class NeuralNetwork:
 
         # train model
 
-        model.fit(train, train_y, epochs=2000)
+        model.fit(train, train_y, epochs=2000, verbose=0)
 
         model.save("models/model.h5", overwrite=True, include_optimizer=True)
 
@@ -134,7 +134,10 @@ class NeuralNetwork:
             if 0 == std:
                 std = 0.0001
             prediction_corrected = (np.array(prediction_data) - np.mean(prediction_data)) * (1.0 / std)
-            stock_price = np.exp(np.reshape(prediction, (1,)))*stock_data_test[i]
+            if 0 == i:
+                stock_price = np.exp(np.reshape(prediction, (1,)))*stock_data_test[i]
+            else:
+                stock_price = np.exp(np.reshape(prediction, (1,)))*stock_data[i - 1]
             stock_data.append(stock_price[0])
         stock_data[:] = [i - (float(stock_data[0])-float(stock_data_test[0])) for i in stock_data]
         # stock_data = stock_data - stock_data[0]
